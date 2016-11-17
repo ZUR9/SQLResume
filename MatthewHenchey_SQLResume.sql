@@ -15,23 +15,24 @@
 --
 CREATE TABLE Person
 (
-  PersonID               int NOT NULL IDENTITY(001,1) PRIMARY KEY
-, FirstName              varchar(50) NOT NULL
-, LastName               varchar(50) NOT NULL
-, EmailAddress           varchar(255)
-, City                   varchar(255)              
-, State                  varchar(2)
-, Country                varchar(255)
+    PersonID               int NOT NULL IDENTITY(001,1) 
+        CONSTRAINT pk_PersonID PRIMARY KEY
+,   FirstName              varchar(50)  NOT NULL
+,   LastName               varchar(50)  NOT NULL
+,   EmailAddress           varchar(255) NOT NULL
+,   City                   varchar(255) NOT NULL              
+,   State                  varchar(2)   NOT NULL
+,   Country                varchar(255) NOT NULL
 );
 INSERT INTO Person 
 VALUES
 (
-  'Matthew'
-, 'Henchey'
-, 'HencheyMatthew@gmail.com'
-, 'Manorville'
-, 'NY'
-, 'United States'
+    'Matthew'
+,   'Henchey'
+,   'HencheyMatthew@gmail.com'
+,   'Manorville'
+,   'NY'
+,   'United States'
 );
 
 --
@@ -39,21 +40,24 @@ VALUES
 --
 CREATE TABLE Education
 (
-  EducationID            int NOT NULL IDENTITY(0001,1) PRIMARY KEY
-, PersonID               int FOREIGN KEY REFERENCES Person(PersonID)  
-, Degreed                bit
-, DegreeEarned           varchar(50)
-, DegreeFrom             varchar(100)
-, GraduatedDate          date
+    EducationID            int NOT NULL IDENTITY(0001,1) 
+        CONSTRAINT pk_EducationID PRIMARY KEY
+,   PersonID               int NOT NULL
+        CONSTRAINT fk_EducationPersonID_PersonPersonID FOREIGN KEY 
+            REFERENCES Person(PersonID)  
+,   Degreed                bit
+,   DegreeEarned           varchar(50)
+,   DegreeFrom             varchar(100)
+,   GraduatedDate          date
 );
 INSERT INTO Education
 VALUES
 (
-  001
-, 1
-, 'Bachelor Of Fine Arts in Photography'
-, 'State University of NY at Plattsburgh'
-, '2013-05-18'
+    001
+,   1
+,   'Bachelor Of Fine Arts in Photography'
+,   'State University of NY at Plattsburgh'
+,   '2013-05-18'
 );
 
 --
@@ -61,43 +65,46 @@ VALUES
 --
 CREATE TABLE WorkHistory
 (
-  WorkHistoryID          int NOT NULL IDENTITY(0001,1) PRIMARY KEY
-, PersonID               int FOREIGN KEY REFERENCES Person(PersonID)
-, CurrentPosition        varchar(100)
-, CurrentPosDescription  varchar(max)
-, Company                varchar(100)
-, CurrentPositionStart   date
-, PreviousPosition       varchar(100)
-, PreviousPosDescription varchar(max)
-, PreviousPositionStart  date
-, PreviousPositionEnd    date
+    WorkHistoryID          int NOT NULL IDENTITY(0001,1) 
+        CONSTRAINT pk_WorkHistoryID PRIMARY KEY
+,   PersonID               int NOT NULL
+        CONSTRAINT fk_WorkHistoryPersonID_PersonPersonID FOREIGN KEY 
+            REFERENCES Person(PersonID)
+,   CurrentPosition        varchar(100)
+,   CurrentPosDescription  varchar(max)
+,   Company                varchar(100)
+,   CurrentPositionStart   date
+,   PreviousPosition       varchar(100)
+,   PreviousPosDescription varchar(max)
+,   PreviousPositionStart  date
+,   PreviousPositionEnd    date
 );
 INSERT INTO WorkHistory
 VALUES
 (
   001
-, 'Data Conversion Specialist'
-, 'Independently manage multiple software conversions,
-    including tracking deadlines and schedules and communicating 
-    status with clients, other Conversions Team members, and 
-    other teams within MINDBODY.
-    Assist Data Conversion Coordinators with the pre-conversion 
-    client assessment process.
-    Independently complete client contact import and client 
-    contact copy projects.
-    Complete software conversions, including data analysis, data mapping, 
-    data conversion and follow-up work.'
-, 'MINDBODY, Inc.'
-, '2016-09-16'
-, 'Technical Support Specialist'
-, 'Resolve client problems related to services or the software product via: 
-    phone, chat, email, and web forums.
-    Whenever possible, resolve issues on the first contact. 
-    If issues cannot be resolved on the first contact, ensure that follow through 
-    is completed according an agreed upon day and time.
-    Educate clients on product features or additional services to meet their needs.'
-, '2014-08-17'
-, '2016-09-16'
+,   'Data Conversion Specialist'
+,   'Independently manage multiple software conversions,
+        including tracking deadlines and schedules and communicating 
+        status with clients, other Conversions Team members, and 
+        other teams within MINDBODY.
+        Assist Data Conversion Coordinators with the pre-conversion 
+        client assessment process.
+        Independently complete client contact import and client 
+        contact copy projects.
+        Complete software conversions, including data analysis, data mapping, 
+        data conversion and follow-up work.'
+,   'MINDBODY, Inc.'
+,   '2016-09-16'
+,   'Technical Support Specialist'
+,   'Resolve client problems related to services or the software product via: 
+        phone, chat, email, and web forums.
+        Whenever possible, resolve issues on the first contact. 
+        If issues cannot be resolved on the first contact, ensure that follow through 
+        is completed according an agreed upon day and time.
+        Educate clients on product features or additional services to meet their needs.'
+,   '2014-08-17'
+,   '2016-09-16'
 );
 
 --
@@ -105,8 +112,9 @@ VALUES
 --
 CREATE TABLE SkillDetails
 (
-  SkillID                int NOT NULL IDENTITY(0001,1) PRIMARY KEY
-, SkillName              varchar(255)           
+    SkillDetailID         int NOT NULL IDENTITY(0001,1) 
+        CONSTRAINT pk_SkillDetailID PRIMARY KEY
+,   SkillName              varchar(255) NOT NULL UNIQUE         
 ); 
 INSERT INTO SkillDetails VALUES ('Microsoft SQL Server');
 INSERT INTO SkillDetails VALUES ('T-SQL');
@@ -141,8 +149,8 @@ INSERT INTO SkillDetails VALUES ('Database Design');
 --
 CREATE TABLE SkillLevels
 (
-  SkillLevelID           int NOT NULL IDENTITY(1,1) PRIMARY KEY
-, SkillLevelName         varchar(255)
+    SkillLevelID           int NOT NULL IDENTITY(1,1) PRIMARY KEY
+,   SkillLevelName         varchar(255) NOT NULL UNIQUE
 );
 INSERT INTO SkillLevels VALUES ('Basic Understanding');   --1
 INSERT INTO SkillLevels VALUES ('Familiar');              --2
@@ -157,10 +165,17 @@ INSERT INTO SkillLevels VALUES ('Expert');                --7
 --
 CREATE TABLE Skills
 (
-  ID                     int NOT NULL IDENTITY(00001,1) PRIMARY KEY
-, PersonID               int FOREIGN KEY REFERENCES Person(PersonID)
-, SkillID                int FOREIGN KEY REFERENCES SkillDetails(SkillID)
-, SkillLevelID           int FOREIGN KEY REFERENCES SkillLevels(SkillLevelID)
+    SkillID                int NOT NULL IDENTITY(00001,1) 
+        CONSTRAINT pk_SkillID PRIMARY KEY
+,   PersonID               int NOT NULL
+        CONSTRAINT fk_SkillsPersonID_PersonPersonID FOREIGN KEY 
+            REFERENCES Person(PersonID)
+,   SkillDetailID          int NOT NULL
+        CONSTRAINT fk_SkillsSkillDetailID_SkillDetailsSkillDetailID FOREIGN KEY 
+            REFERENCES SkillDetails(SkillDetailID)
+,   SkillLevelID           int NOT NULL 
+        CONSTRAINT fk_SkillsSkillLevelID_SkillLevelsSkillLevelID FOREIGN KEY 
+            REFERENCES SkillLevels(SkillLevelID)
 );
 INSERT INTO Skills VALUES (001,0001,6);--('Microsoft SQL Server')
 INSERT INTO Skills VALUES (001,0002,6);--('T-SQL')
@@ -195,20 +210,29 @@ INSERT INTO Skills VALUES (001,0027,6);--('Database Design')
 --Generate a condensed summary
 --
 SELECT
-      Person.FirstName + ' ' + Person.LastName           AS [Person]
-    , Person.EmailAddress
-    , Person.City + ', ' + Person.State                  AS [Location]
-    , Education.DegreeEarned
-    , Education.DegreeFrom                               AS [College]
-    , CAST(Education.GraduatedDate AS varchar(10))       AS [Graduated]
-    , WorkHistory.CurrentPosition + ' (' + 
+    Person.FirstName + 
+        ' ' + 
+        Person.LastName                                  AS [Person]
+,   Person.EmailAddress
+,   Person.City + 
+        ', ' + 
+        Person.State                                     AS [Location]
+,   Education.DegreeEarned
+,   Education.DegreeFrom                                 AS [College]
+,   CAST(Education.GraduatedDate AS varchar(10))         AS [Graduated]
+,   WorkHistory.CurrentPosition + 
+        ' (' + 
         CAST(WorkHistory.CurrentPositionStart AS varchar(10)) + 
-        ' - ' + CAST(GETDATE() AS varchar(10)) + ')'     AS [CurrentPosition]
-    , WorkHistory.Company
-    , WorkHistory.PreviousPosition + ' (' + 
-        CAST(WorkHistory.PreviousPositionStart AS varchar(10)) + ' - ' + 
-        CAST(WorkHistory.PreviousPositionEnd AS varchar(10)) + ')'
-                                                         AS [PreviousPosition]
+        ' - ' + 
+        CAST(GETDATE() AS varchar(10)) + 
+        ')'                                              AS [CurrentPosition]
+,   WorkHistory.Company
+,   WorkHistory.PreviousPosition + 
+        ' (' + 
+        CAST(WorkHistory.PreviousPositionStart AS varchar(10)) + 
+        ' - ' + 
+        CAST(WorkHistory.PreviousPositionEnd AS varchar(10)) + 
+        ')'                                              AS [PreviousPosition]
 FROM Person
     INNER JOIN Education
         ON Person.PersonID = Education.PersonID
@@ -220,16 +244,17 @@ FROM Person
 --Generate Skills summary
 --
 SELECT
-      Person.FirstName + ' ' + 
-      Person.LastName                    AS [Person]
-    , SkillDetails.SkillName             AS [Skills]
-    , REPLICATE('*',Skills.SkillLevelID) AS [SkillLevel]
-    , SkillLevels.SkillLevelName         AS [SkillDescription]
+    Person.FirstName + 
+        ' ' + 
+        Person.LastName                AS [Person]
+,   SkillDetails.SkillName             AS [Skills]
+,   REPLICATE('*',Skills.SkillLevelID) AS [SkillLevel]
+,   SkillLevels.SkillLevelName         AS [SkillDescription]
 FROM Person
     INNER JOIN Skills
         ON Person.PersonID = Skills.PersonID
     INNER JOIN SkillDetails
-        ON Skills.SkillID = SkillDetails.SkillID
+        ON Skills.SkillID = SkillDetails.SkillDetailID
     INNER JOIN SkillLevels
         ON Skills.SkillLevelID = SkillLevels.SkillLevelID
 WHERE Skills.SkillLevelID > 2

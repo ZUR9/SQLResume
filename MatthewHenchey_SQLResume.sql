@@ -15,13 +15,13 @@
 --
 CREATE TABLE Person
 (
-    PersonID               int NOT NULL IDENTITY(001,1)
-,   FirstName              varchar(50)  NOT NULL
-,   LastName               varchar(50)  NOT NULL
-,   EmailAddress           varchar(255) NOT NULL
-,   City                   varchar(255) NOT NULL
-,   State                  char(2)      NOT NULL
-,   Country                varchar(255) NOT NULL
+    PersonID               int           NOT NULL IDENTITY(001,1)
+,   FirstName              nvarchar(50)  NOT NULL DEFAULT ( '' )
+,   LastName               nvarchar(50)  NOT NULL DEFAULT ( '' )
+,   EmailAddress           nvarchar(255) NOT NULL DEFAULT ( '' )
+,   City                   nvarchar(255) NOT NULL DEFAULT ( '' )
+,   State                  nchar(2)      NOT NULL DEFAULT ( '' )
+,   Country                varchar(255)  NOT NULL DEFAULT ( '' )
 ,   CONSTRAINT PkPersonID PRIMARY KEY (PersonID)
 );
 INSERT INTO Person 
@@ -40,10 +40,10 @@ VALUES
 --
 CREATE TABLE Education
 (
-    PersonID               int NOT NULL  
-,   Degreed                bit
-,   DegreeEarned           varchar(100)
-,   DegreeFrom             varchar(100)
+    PersonID               int          NOT NULL  
+,   Degreed                bit          NOT NULL DEFAULT ( 0 )
+,   DegreeEarned           varchar(100) NOT NULL DEFAULT ( '' )
+,   DegreeFrom             varchar(100) NOT NULL DEFAULT ( '' )
 ,   GraduatedDate          date
 ,   CONSTRAINT PkEducation PRIMARY KEY (PersonID,DegreeEarned)
 ,   CONSTRAINT FkEducation_Person FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
@@ -63,12 +63,12 @@ VALUES
 --
 CREATE TABLE WorkHistory
 (
-    PersonID               int NOT NULL
-,   Position               varchar(100) NOT NULL
-,   PositionDescription    varchar(max) NOT NULL
-,   Company                varchar(100) NOT NULL
-,   PositionStart          date NOT NULL
-,   PositionEnd            varchar(100) DEFAULT NULL
+    PersonID               int          NOT NULL
+,   Position               varchar(100) NOT NULL DEFAULT ( '' )
+,   PositionDescription    varchar(max) NOT NULL DEFAULT ( '' )
+,   Company                varchar(100) NOT NULL DEFAULT ( '' )
+,   PositionStart          date         NOT NULL
+,   PositionEnd            date
 ,   CONSTRAINT PkWorkHistory PRIMARY KEY (PersonID,Position,PositionStart)
 ,   CONSTRAINT FkWorkHistory_Person FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
 );
@@ -112,8 +112,8 @@ VALUES
 --
 CREATE TABLE SkillList
 (
-    SkillListID         int NOT NULL IDENTITY(0001,1) 
-,   SkillName              varchar(255) NOT NULL UNIQUE
+    SkillListID         int          NOT NULL IDENTITY(001,1) 
+,   SkillName           varchar(255) NOT NULL UNIQUE
 ,   CONSTRAINT PkSkillListID PRIMARY KEY (SkillListID)
 ); 
 INSERT INTO SkillList VALUES ('Microsoft SQL Server');
@@ -149,7 +149,7 @@ INSERT INTO SkillList VALUES ('Database Design');
 --
 CREATE TABLE SkillLevel
 (
-    SkillLevelID           int NOT NULL IDENTITY(1,1) 
+    SkillLevelID           int          NOT NULL IDENTITY(001,1) 
 ,   SkillLevelName         varchar(255) NOT NULL UNIQUE
 ,   CONSTRAINT PkSkillLevelID PRIMARY KEY (SkillLevelID)
 );
@@ -174,33 +174,33 @@ CREATE TABLE Skill
 ,   CONSTRAINT FkSkill_SkillList FOREIGN KEY (SkillListID) REFERENCES SkillList(SkillListID)
 ,   CONSTRAINT FkSkill_SkillLevel FOREIGN KEY (SkillLevelID) REFERENCES SkillLevel(SkillLevelID)
 );
-INSERT INTO Skill VALUES (001,0001,6);--('Microsoft SQL Server')
-INSERT INTO Skill VALUES (001,0002,6);--('T-SQL')
-INSERT INTO Skill VALUES (001,0003,4);--('SSMS')
-INSERT INTO Skill VALUES (001,0004,3);--('SSIS')
-INSERT INTO Skill VALUES (001,0005,6);--('SQL Report Writing')
-INSERT INTO Skill VALUES (001,0006,4);--('NoSQL')
-INSERT INTO Skill VALUES (001,0007,4);--('MongoDB')
-INSERT INTO Skill VALUES (001,0008,3);--('C')
-INSERT INTO Skill VALUES (001,0009,3);--('C++')
-INSERT INTO Skill VALUES (001,0010,4);--('C#')
-INSERT INTO Skill VALUES (001,0011,3);--('.Net Framework')
-INSERT INTO Skill VALUES (001,0012,2);--('Java')
-INSERT INTO Skill VALUES (001,0013,4);--('JavaScript')
-INSERT INTO Skill VALUES (001,0014,3);--('jQuery')
-INSERT INTO Skill VALUES (001,0015,4);--('HTML')
-INSERT INTO Skill VALUES (001,0016,4);--('CSS')
-INSERT INTO Skill VALUES (001,0017,3);--('PHP')
-INSERT INTO Skill VALUES (001,0018,4);--('Perl')
-INSERT INTO Skill VALUES (001,0019,3);--('Ruby')
-INSERT INTO Skill VALUES (001,0020,4);--('MEAN Stack')
-INSERT INTO Skill VALUES (001,0021,4);--('MEAN-MongoDB')
-INSERT INTO Skill VALUES (001,0022,2);--('MEAN-Express')
-INSERT INTO Skill VALUES (001,0023,4);--('MEAN-Angular')
-INSERT INTO Skill VALUES (001,0024,4);--('MEAN-Node.JS')
-INSERT INTO Skill VALUES (001,0025,5);--('Relational Databases')
-INSERT INTO Skill VALUES (001,0026,4);--('Non-relational Databases')
-INSERT INTO Skill VALUES (001,0027,6);--('Database Design')
+INSERT INTO Skill VALUES (001,001,6);--('Microsoft SQL Server')
+INSERT INTO Skill VALUES (001,002,6);--('T-SQL')
+INSERT INTO Skill VALUES (001,003,4);--('SSMS')
+INSERT INTO Skill VALUES (001,004,3);--('SSIS')
+INSERT INTO Skill VALUES (001,005,6);--('SQL Report Writing')
+INSERT INTO Skill VALUES (001,006,4);--('NoSQL')
+INSERT INTO Skill VALUES (001,007,4);--('MongoDB')
+INSERT INTO Skill VALUES (001,008,3);--('C')
+INSERT INTO Skill VALUES (001,009,3);--('C++')
+INSERT INTO Skill VALUES (001,010,4);--('C#')
+INSERT INTO Skill VALUES (001,011,3);--('.Net Framework')
+INSERT INTO Skill VALUES (001,012,2);--('Java')
+INSERT INTO Skill VALUES (001,013,4);--('JavaScript')
+INSERT INTO Skill VALUES (001,014,3);--('jQuery')
+INSERT INTO Skill VALUES (001,015,4);--('HTML')
+INSERT INTO Skill VALUES (001,016,4);--('CSS')
+INSERT INTO Skill VALUES (001,017,3);--('PHP')
+INSERT INTO Skill VALUES (001,018,4);--('Perl')
+INSERT INTO Skill VALUES (001,019,3);--('Ruby')
+INSERT INTO Skill VALUES (001,020,4);--('MEAN Stack')
+INSERT INTO Skill VALUES (001,021,4);--('MEAN-MongoDB')
+INSERT INTO Skill VALUES (001,022,2);--('MEAN-Express')
+INSERT INTO Skill VALUES (001,023,4);--('MEAN-Angular')
+INSERT INTO Skill VALUES (001,024,4);--('MEAN-Node.JS')
+INSERT INTO Skill VALUES (001,025,5);--('Relational Databases')
+INSERT INTO Skill VALUES (001,026,4);--('Non-relational Databases')
+INSERT INTO Skill VALUES (001,027,6);--('Database Design')
 
 
 --

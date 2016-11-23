@@ -10,34 +10,39 @@
     Thank you for taking the time to review this data.
 */
 
---
---Create and populate Person
---
+/************************
+> > > Create Tables < < <
+*************************/
 CREATE TABLE Person
 (
-    PersonID               int           NOT NULL IDENTITY(001,1)
-,   FirstName              nvarchar(50)  NOT NULL DEFAULT ( '' )
-,   LastName               nvarchar(50)  NOT NULL DEFAULT ( '' )
-,   EmailAddress           nvarchar(255) NOT NULL DEFAULT ( '' )
-,   City                   nvarchar(255) NOT NULL DEFAULT ( '' )
-,   State                  nchar(2)      NOT NULL DEFAULT ( '' )
-,   Country                varchar(255)  NOT NULL DEFAULT ( '' )
-,   CONSTRAINT PkPersonID PRIMARY KEY (PersonID)
-);
-INSERT INTO Person 
-VALUES
-(
-    'Matthew'
-,   'Henchey'
-,   'HencheyMatthew@gmail.com'
-,   'Manorville'
-,   'NY'
-,   'United States'
+    PersonID                int             NOT NULL IDENTITY(000000001,1)
+,   FirstName               nvarchar(50)    NOT NULL DEFAULT ( '' )
+,   LastName                nvarchar(50)    NOT NULL DEFAULT ( '' )
+,   CONSTRAINT PkPerson                     PRIMARY KEY (PersonID)
 );
 
---
---Create and populate Education
---
+CREATE TABLE EmailAddress
+(
+    PersonID                int             NOT NULL 
+,   EmailAddress            nvarchar(100)   NOT NULL DEFAULT ( '' )
+,   CONSTRAINT PkEmailAddress               PRIMARY KEY (PersonID)
+,   CONSTRAINT FkEmailAddress_Person        FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
+);
+
+CREATE TABLE Address
+(
+    AddressID               int             NOT NULL IDENTITY (000000001,1)
+,   PersonID                int             NOT NULL
+,   Address1                nvarchar(100)   NOT NULL DEFAULT ( '' )
+,   Address2                nvarchar(100)   NOT NULL DEFAULT ( '' )
+,   City                    nvarchar(100)   NOT NULL DEFAULT ( '' )
+,   State                   nchar(2)        NOT NULL DEFAULT ( '' )
+,   Zipcode                 nchar(5)        NOT NULL DEFAULT ( '' )
+,   Country                 nvarchar(255)   NOT NULL DEFAULT ( '' )
+,   CONSTRAINT PkAddress                    PRIMARY KEY (AddressID)
+,   CONSTRAINT FkAddress_Person             FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
+);
+
 CREATE TABLE Education
 (
     PersonID               int          NOT NULL  
@@ -45,37 +50,94 @@ CREATE TABLE Education
 ,   DegreeEarned           varchar(100) NOT NULL DEFAULT ( '' )
 ,   DegreeFrom             varchar(100) NOT NULL DEFAULT ( '' )
 ,   GraduatedDate          date
-,   CONSTRAINT PkEducation PRIMARY KEY (PersonID,DegreeEarned)
-,   CONSTRAINT FkEducation_Person FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
+,   CONSTRAINT PkEducation              PRIMARY KEY (PersonID,DegreeEarned)
+,   CONSTRAINT FkEducation_Person       FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
 );
+
+CREATE TABLE WorkHistory
+(
+    WorkHistoryID           int          NOT NULL IDENTITY (000000001,1)
+,   PersonID                int          NOT NULL
+,   Position                varchar(100) NOT NULL DEFAULT ( '' )
+,   PositionDescription     varchar(max) NOT NULL DEFAULT ( '' )
+,   Company                 varchar(100) NOT NULL DEFAULT ( '' )
+,   PositionStart           date         NOT NULL
+,   PositionEnd             date
+,   CONSTRAINT PkWorkHistory             PRIMARY KEY (PersonID,Position,PositionStart)
+,   CONSTRAINT FkWorkHistory_Person      FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
+);
+
+CREATE TABLE SkillList
+(
+    SkillListID         int          NOT NULL IDENTITY(001,1) 
+,   SkillName           varchar(255) NOT NULL UNIQUE
+,   CONSTRAINT PkSkillList           PRIMARY KEY (SkillListID)
+); 
+
+CREATE TABLE SkillLevel
+(
+    SkillLevelID           int          NOT NULL IDENTITY(001,1) 
+,   SkillLevelName         varchar(255) NOT NULL UNIQUE
+,   CONSTRAINT PkSkillLevel             PRIMARY KEY (SkillLevelID)
+);
+
+CREATE TABLE Skill
+(
+    PersonID                int         NOT NULL
+,   SkillListID             int         NOT NULL
+,   SkillLevelID            int         NOT NULL 
+,   CONSTRAINT PkSkill                  PRIMARY KEY (PersonID,SkillListID,SkillLevelID)
+,   CONSTRAINT FkSkill_Person           FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
+,   CONSTRAINT FkSkill_SkillList        FOREIGN KEY (SkillListID) REFERENCES SkillList(SkillListID)
+,   CONSTRAINT FkSkill_SkillLevel       FOREIGN KEY (SkillLevelID) REFERENCES SkillLevel(SkillLevelID)
+);
+
+
+
+/**************************
+> > > Populate Tables < < <
+***************************/
+
+INSERT INTO Person 
+VALUES
+(
+    'Matthew'
+,   'Henchey'
+);
+
+INSERT INTO EmailAddress
+VALUES
+(
+    000000001
+,   'Henchey.Matthew@Gmail.com'
+);
+
+INSERT INTO Address
+VALUES
+(
+    000000001
+,   ''
+,   ''
+,   'Manorville'
+,   'NY'
+,   '11949'
+,   'United States'
+);
+
 INSERT INTO Education
 VALUES
 (
-    001
+    000000001
 ,   1
 ,   'Bachelor Of Fine Arts in Photography'
 ,   'State University of NY at Plattsburgh'
 ,   '2013-05-18'
 );
 
---
---Create and populate WorkHistory
---
-CREATE TABLE WorkHistory
-(
-    PersonID               int          NOT NULL
-,   Position               varchar(100) NOT NULL DEFAULT ( '' )
-,   PositionDescription    varchar(max) NOT NULL DEFAULT ( '' )
-,   Company                varchar(100) NOT NULL DEFAULT ( '' )
-,   PositionStart          date         NOT NULL
-,   PositionEnd            date
-,   CONSTRAINT PkWorkHistory PRIMARY KEY (PersonID,Position,PositionStart)
-,   CONSTRAINT FkWorkHistory_Person FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
-);
 INSERT INTO WorkHistory
 VALUES
 (
-    001
+    000000001
 ,   'Data Conversion Specialist'
 ,   'Independently manage multiple software conversions,
         including tracking deadlines and schedules and communicating 
@@ -87,14 +149,14 @@ VALUES
         contact copy projects.
         Complete software conversions, including data analysis, data mapping, 
         data conversion and follow-up work.'
-,   'MINDBODY, Inc.'
+,   'MINDBODY, Inc'
 ,   '2016-09-16'
 ,   NULL
 );
 INSERT INTO WorkHistory
 VALUES
 (
-    001
+    000000001
 ,   'Technical Support Specialist'
 ,   'Resolve client problems related to services or the software product via: 
         phone, chat, email, and web forums.
@@ -107,15 +169,6 @@ VALUES
 ,   '2016-09-16'
 );
 
---
---Create and populate SkillList
---
-CREATE TABLE SkillList
-(
-    SkillListID         int          NOT NULL IDENTITY(001,1) 
-,   SkillName           varchar(255) NOT NULL UNIQUE
-,   CONSTRAINT PkSkillListID PRIMARY KEY (SkillListID)
-); 
 INSERT INTO SkillList VALUES ('Microsoft SQL Server');
 INSERT INTO SkillList VALUES ('T-SQL');
 INSERT INTO SkillList VALUES ('SSMS');
@@ -144,15 +197,6 @@ INSERT INTO SkillList VALUES ('Relational Databases');
 INSERT INTO SkillList VALUES ('Non-relational Databases');
 INSERT INTO SkillList VALUES ('Database Design');
 
---
---Create and populate SkillLevel
---
-CREATE TABLE SkillLevel
-(
-    SkillLevelID           int          NOT NULL IDENTITY(001,1) 
-,   SkillLevelName         varchar(255) NOT NULL UNIQUE
-,   CONSTRAINT PkSkillLevelID PRIMARY KEY (SkillLevelID)
-);
 INSERT INTO SkillLevel VALUES ('Basic Understanding');   --1
 INSERT INTO SkillLevel VALUES ('Familiar');              --2
 INSERT INTO SkillLevel VALUES ('Moderate Understanding');--3
@@ -161,102 +205,102 @@ INSERT INTO SkillLevel VALUES ('Proficient');            --5
 INSERT INTO SkillLevel VALUES ('Deep Understanding');    --6
 INSERT INTO SkillLevel VALUES ('Expert');                --7
 
---
---Create and populate Skill
---
-CREATE TABLE Skill
-(
-    PersonID        int NOT NULL
-,   SkillListID     int NOT NULL
-,   SkillLevelID    int NOT NULL 
-,   CONSTRAINT PkSkill PRIMARY KEY (PersonID,SkillListID,SkillLevelID)
-,   CONSTRAINT FkSkill_Person FOREIGN KEY (PersonID) REFERENCES Person(PersonID)
-,   CONSTRAINT FkSkill_SkillList FOREIGN KEY (SkillListID) REFERENCES SkillList(SkillListID)
-,   CONSTRAINT FkSkill_SkillLevel FOREIGN KEY (SkillLevelID) REFERENCES SkillLevel(SkillLevelID)
-);
-INSERT INTO Skill VALUES (001,001,6);--('Microsoft SQL Server')
-INSERT INTO Skill VALUES (001,002,6);--('T-SQL')
-INSERT INTO Skill VALUES (001,003,4);--('SSMS')
-INSERT INTO Skill VALUES (001,004,3);--('SSIS')
-INSERT INTO Skill VALUES (001,005,6);--('SQL Report Writing')
-INSERT INTO Skill VALUES (001,006,4);--('NoSQL')
-INSERT INTO Skill VALUES (001,007,4);--('MongoDB')
-INSERT INTO Skill VALUES (001,008,3);--('C')
-INSERT INTO Skill VALUES (001,009,3);--('C++')
-INSERT INTO Skill VALUES (001,010,4);--('C#')
-INSERT INTO Skill VALUES (001,011,3);--('.Net Framework')
-INSERT INTO Skill VALUES (001,012,2);--('Java')
-INSERT INTO Skill VALUES (001,013,4);--('JavaScript')
-INSERT INTO Skill VALUES (001,014,3);--('jQuery')
-INSERT INTO Skill VALUES (001,015,4);--('HTML')
-INSERT INTO Skill VALUES (001,016,4);--('CSS')
-INSERT INTO Skill VALUES (001,017,3);--('PHP')
-INSERT INTO Skill VALUES (001,018,4);--('Perl')
-INSERT INTO Skill VALUES (001,019,3);--('Ruby')
-INSERT INTO Skill VALUES (001,020,4);--('MEAN Stack')
-INSERT INTO Skill VALUES (001,021,4);--('MEAN-MongoDB')
-INSERT INTO Skill VALUES (001,022,2);--('MEAN-Express')
-INSERT INTO Skill VALUES (001,023,4);--('MEAN-Angular')
-INSERT INTO Skill VALUES (001,024,4);--('MEAN-Node.JS')
-INSERT INTO Skill VALUES (001,025,5);--('Relational Databases')
-INSERT INTO Skill VALUES (001,026,4);--('Non-relational Databases')
-INSERT INTO Skill VALUES (001,027,6);--('Database Design')
+INSERT INTO Skill VALUES (000000001,001,6);--('Microsoft SQL Server')
+INSERT INTO Skill VALUES (000000001,002,6);--('T-SQL')
+INSERT INTO Skill VALUES (000000001,003,4);--('SSMS')
+INSERT INTO Skill VALUES (000000001,004,3);--('SSIS')
+INSERT INTO Skill VALUES (000000001,005,6);--('SQL Report Writing')
+INSERT INTO Skill VALUES (000000001,006,4);--('NoSQL')
+INSERT INTO Skill VALUES (000000001,007,4);--('MongoDB')
+INSERT INTO Skill VALUES (000000001,008,3);--('C')
+INSERT INTO Skill VALUES (000000001,009,3);--('C++')
+INSERT INTO Skill VALUES (000000001,010,4);--('C#')
+INSERT INTO Skill VALUES (000000001,011,3);--('.Net Framework')
+INSERT INTO Skill VALUES (000000001,012,2);--('Java')
+INSERT INTO Skill VALUES (000000001,013,4);--('JavaScript')
+INSERT INTO Skill VALUES (000000001,014,3);--('jQuery')
+INSERT INTO Skill VALUES (000000001,015,4);--('HTML')
+INSERT INTO Skill VALUES (000000001,016,4);--('CSS')
+INSERT INTO Skill VALUES (000000001,017,3);--('PHP')
+INSERT INTO Skill VALUES (000000001,018,4);--('Perl')
+INSERT INTO Skill VALUES (000000001,019,3);--('Ruby')
+INSERT INTO Skill VALUES (000000001,020,4);--('MEAN Stack')
+INSERT INTO Skill VALUES (000000001,021,4);--('MEAN-MongoDB')
+INSERT INTO Skill VALUES (000000001,022,2);--('MEAN-Express')
+INSERT INTO Skill VALUES (000000001,023,4);--('MEAN-Angular')
+INSERT INTO Skill VALUES (000000001,024,4);--('MEAN-Node.JS')
+INSERT INTO Skill VALUES (000000001,025,5);--('Relational Databases')
+INSERT INTO Skill VALUES (000000001,026,4);--('Non-relational Databases')
+INSERT INTO Skill VALUES (000000001,027,6);--('Database Design')
 
 
+
+/*********************
+> > > Query Data < < <
+**********************/
+
 --
---Generate Education History
+--Query Education History
 --
 SELECT
-    Person.FirstName + 
-        ' ' + 
-        Person.LastName                                  AS [Person]
-,   Person.EmailAddress
-,   Person.City + 
-        ', ' + 
-        Person.State                                     AS [Location]
-,   Education.DegreeEarned
-,   Education.DegreeFrom                                 AS [College]
-,   CAST(Education.GraduatedDate AS varchar(10))         AS [Graduated]
-From Person 
-    INNER JOIN Education
-        ON Person.PersonID = Education.PersonID
-ORDER BY Education.GraduatedDate DESC;
+    [dbo].[Person].[FirstName] + ' ' + [dbo].[Person].[LastName]                 AS [Name]
+,   [dbo].[EmailAddress].[EmailAddress]
+,   [dbo].[Address].[City] + ', ' + [dbo].[Address].[State]                      AS [Location]
+,   [dbo].[Education].[DegreeEarned]
+,   [dbo].[Education].[DegreeFrom]
+,   CAST([dbo].[Education].[GraduatedDate] AS nvarchar(10))                      AS [Graduated]
+FROM [dbo].[Person]
+    INNER JOIN [dbo].[EmailAddress]
+        ON [dbo].[Person].[PersonID] = [dbo].[Emailaddress].[PersonID]
+    INNER JOIN [dbo].[Address]
+        ON [dbo].[Person].[PersonID] = [dbo].[Address].[PersonID]
+    INNER JOIN [dbo].[Education]
+        ON [dbo].[Person].[PersonID] = [dbo].[Education].[PersonID]
+ORDER BY [dbo].[Education].[GraduatedDate] DESC;
+
 
 --
---Generate WorkHistory
+--Query WorkHistory
 SELECT
-    Person.FirstName +
-        ' ' +
-        Person.LastName                            AS [Person]
-,   WorkHistory.Position
-,   WorkHistory.Company
-,   CAST(WorkHistory.PositionStart AS varchar(10)) AS [PositionStart]
-,   CASE
-        WHEN WorkHistory.PositionEnd IS NULL
-            THEN 'Current'
-        Else CAST(WorkHistory.PositionEnd AS varchar(10))
-    END                                            AS [PositionEnd]
-FROM Person
-    INNER JOIN WorkHistory
-        ON Person.PersonID = WorkHistory.PersonID
-ORDER BY WorkHistory.PositionStart DESC;
+    [dbo].[Person].[FirstName] + ' ' + [dbo].[Person].[LastName]                 AS [Name]
+,   [dbo].[WorkHistory].[Position]
+,   [dbo].[WorkHistory].[Company]
+,   CAST([dbo].[WorkHistory].[PositionSTart]        AS nvarchar(10))             AS [PositionStart]
+,   COALESCE(CAST([dbo].[WorkHistory].[PositionEnd] AS nvarchar(10)), 'Current') AS [PositionEnd]
+FROM [dbo].[Person]
+    INNER JOIN [dbo].[WorkHistory]
+        ON [dbo].[Person].[PersonID] = [dbo].[WorkHistory].[PersonID]
+ORDER BY [dbo].[WorkHistory].[PositionStart] DESC;
+
 
 --
---Generate Skills
+--Query Skills
 --
 SELECT
-    Person.FirstName + 
-        ' ' + 
-        Person.LastName                 AS [Person]
-,   SkillList.SkillName                 AS [Skill]
-,   REPLICATE('*',Skill.SkillLevelID)   AS [SkillLevel]
-,   SkillLevel.SkillLevelName           AS [SkillDescription]
-FROM Person
-    INNER JOIN Skill
-        ON Person.PersonID = Skill.PersonID
-    INNER JOIN SkillList
-        ON Skill.SkillListID = SkillList.SkillListID
-    INNER JOIN SkillLevel
-        ON Skill.SkillLevelID = SkillLevel.SkillLevelID
-WHERE Skill.SkillLevelID > 2
-ORDER BY Skill.SkillLevelID DESC;
+    CASE
+        WHEN [info].[RowNum] = 1
+           THEN [info].[PersonName]
+        ELSE ''
+    END                                     AS [Person]
+,   [info].[SkillName]                      AS [Skill]
+,   REPLICATE('*',[info].[SkillLevelID])    AS [SkillLevel]
+,   [info].[SkillLevelName]                 AS [SkillDescription]
+FROM (
+    SELECT 
+         [dbo].[Person].[PersonID]
+    ,    [dbo].[Person].[FirstName] + ' ' + [dbo].[Person].[LastName]   AS [PersonName]
+    ,    ROW_NUMBER() OVER(PARTITION BY [dbo].[Person].[PersonID] 
+                      ORDER BY [dbo].[Skill].[SkillLevelID] DESC)       AS [RowNum]
+    ,    [dbo].[SkillList].[SkillName]
+    ,    [dbo].[Skill].[SkillLevelID]
+    ,    [dbo].[SkillLevel].[SkillLevelName]
+    FROM [dbo].[Person]
+        INNER JOIN [dbo].[Skill]
+            ON [dbo].[Person].[PersonID]    = [dbo].[Skill].[PersonID]
+        INNER JOIN [dbo].[SkillList]
+            ON [dbo].[Skill].[SkillListID]  = [dbo].[SkillList].[SkillListID]
+        INNER JOIN [dbo].[SkillLevel]
+            ON [dbo].[Skill].[SkillLevelID] = [dbo].[SkillLevel].[SkillLevelID]
+    WHERE [dbo].[Skill].[SkillLevelID] > 2
+    ) AS  [info]
+ORDER BY  [info].[SkillLevelID] DESC;

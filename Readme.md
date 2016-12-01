@@ -1,8 +1,7 @@
 ### Welcome to Matthew Henchey’s SQL-based Resume
 As you may have guessed, I will exploit any and all opportunities to experiment with SQL. 
 This repository contains my attempt at condensing my professional resume into a collection 
-of tables that can be easily queried. A supplemental document is included with queries to
-generate relevant information.
+of tables that can be easily queried. I have included several basic queries to display the data.
 
 ### Brief Summary
 I am a dedicated professional Data Conversion Specialist who has been consistently praised 

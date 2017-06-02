@@ -162,7 +162,7 @@ VALUES
 INSERT INTO WorkHistory
 VALUES
 (
-    000000001
+    000000002
 ,   N'Data Conversion Specialist'
 ,   N'Independently manage multiple software conversions,
         including tracking deadlines and schedules and communicating 
@@ -290,10 +290,10 @@ ORDER BY [dbo].[Education].[GraduatedDate] DESC;
 --
 --Query WorkHistory
 SELECT
-    [dbo].[Person].[FirstName] + ' ' + [dbo].[Person].[LastName]                 AS [Name]
+    [dbo].[Person].[FirstName] + ' ' + [dbo].[Person].[LastName]                  AS [Name]
 ,   [dbo].[WorkHistory].[Position]
 ,   [dbo].[WorkHistory].[Company]
-,   CAST([dbo].[WorkHistory].[PositionSTart]        AS nvarchar(10))             AS [PositionStart]
+,   CAST([dbo].[WorkHistory].[PositionStart]        AS nvarchar(10))              AS [PositionStart]
 ,   COALESCE(CAST([dbo].[WorkHistory].[PositionEnd] AS nvarchar(10)), N'Current') AS [PositionEnd]
 FROM [dbo].[Person]
     INNER JOIN [dbo].[WorkHistory]
